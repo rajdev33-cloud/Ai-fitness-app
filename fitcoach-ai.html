@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>FitCoach AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--g:#1fa855;--gd:#0d4a2b;--gl:#e6f6ec;--bg:#fff;--card:#f5faf7;--tx:#10281b;--mu:#6b7c72;--bd:#e1ebe5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a14;--card:#16251c;--tx:#e9f5ee;--mu:#93a99b;--bd:#243a2d;--gl:#16301f;--gd:#7be0a4}}
+*{box-sizing:border-box;margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+html,body{height:100%;background:#dfe9e3}body{display:flex;justify-content:center;align-items:center}
+#app{width:100%;max-width:400px;height:100%;max-height:820px;background:var(--bg);color:var(--tx);position:relative;overflow:hidden;display:flex;flex-direction:column;border-radius:0}
+@media(min-width:500px){#app{border-radius:32px;box-shadow:0 20px 60px #0003;height:94vh}}
+.scr{display:none;flex:1;overflow-y:auto;padding:18px 20px 16px;flex-direction:column;gap:12px}.scr.on{display:flex}
+h1{font-size:26px;color:var(--gd)}h2{font-size:15px}.mu{color:var(--mu);font-size:13px}
+.btn{background:var(--g);color:#fff;border:0;border-radius:28px;padding:15px;font-size:16px;font-weight:600;cursor:pointer;width:100%}
+.btn.o{background:var(--bg);color:var(--tx);border:1px solid var(--bd);font-weight:500;font-size:14px;display:flex;gap:8px;justify-content:center;align-items:center}
+.lnk{background:none;border:0;color:var(--g);font-weight:600;cursor:pointer;font-size:14px}
+.back{background:none;border:0;font-size:22px;color:var(--tx);align-self:flex-start;cursor:pointer}
+.f{border:1px solid var(--bd);border-radius:12px;padding:8px 14px;background:var(--card);display:flex;flex-direction:column}
+.f label{font-size:11px;color:var(--mu)}.f input,.f select{border:0;background:none;font-size:15px;color:var(--tx);outline:0;padding:3px 0;width:100%}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:12px;display:flex;gap:12px;align-items:center;cursor:pointer;text-align:left;color:var(--tx);width:100%}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tile{flex-direction:column;align-items:flex-start;gap:4px;font-size:15px}.tile b{font-size:15px}.ic{font-size:26px}
+.ai{background:var(--gl);border-radius:16px;padding:14px;display:flex;gap:8px;justify-content:space-between;align-items:center;cursor:pointer}
+nav{display:none;border-top:1px solid var(--bd);background:var(--bg)}nav.on{display:flex}
+nav button{flex:1;background:none;border:0;padding:8px 0 10px;font-size:11px;color:var(--mu);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}nav button span{font-size:20px}nav button.on{color:var(--g);font-weight:700}
+.em{font-size:38px;width:56px;height:56px;border-radius:14px;background:var(--gl);display:flex;align-items:center;justify-content:center;flex:none}
+.done{outline:2px solid var(--g)}.chk{margin-left:auto;font-size:20px}
+.msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.m{max-width:82%;padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.4;white-space:pre-wrap}.m.b{background:var(--card);border:1px solid var(--bd)}.m.u{background:var(--g);color:#fff;align-self:flex-end}
+.row{display:flex;gap:8px}.row input{flex:1;border:1px solid var(--bd);border-radius:24px;padding:12px 16px;background:var(--card);color:var(--tx);font-size:14px;outline:0}
+.send{width:44px;height:44px;border-radius:50%;background:var(--g);color:#fff;border:0;font-size:18px;cursor:pointer}
+.chip{border:1px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:16px;padding:6px 10px;font-size:12px;cursor:pointer;white-space:nowrap}
+.bars{display:flex;align-items:flex-end;gap:8px;height:90px;justify-content:space-between}.bars div{flex:1;text-align:center;font-size:11px;color:var(--mu);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;height:100%}.bars i{width:100%;max-width:14px;background:var(--g);border-radius:4px;display:block}
+.ring{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}.ring span{background:var(--card);width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px}
+#ov{position:absolute;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;text-align:center;z-index:5}#ov.on{display:flex}
+#toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:#10281b;color:#fff;padding:10px 16px;border-radius:20px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;z-index:9;max-width:85%;text-align:center}#toast.on{opacity:1}
+.stat{flex-direction:column;align-items:flex-start;gap:2px}.stat b{font-size:22px}
+select.rg{border:1px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:10px;padding:4px 8px}
+</style></head><body><div id="app">
+
+<section class="scr on" id="welcome" style="justify-content:center;text-align:center;align-items:center">
+<div style="font-size:64px">💚</div><h1>FITCOACH AI</h1><p class="mu">SMARTER FITNESS · BRIGHTER YOU</p>
+<div style="font-size:90px;margin:10px 0" id="wi">🏃‍♀️</div>
+<h1 id="wt" style="font-size:30px;color:var(--tx)">Stay Fit,<br>Stay Healthy</h1><p class="mu" id="wp">Personalized workouts, smarter nutrition, a healthier you.</p>
+<div id="dots" style="display:flex;gap:6px"></div>
+<button class="btn" onclick="go('details')">Get Started</button><button class="lnk" onclick="go('login')">Login</button></section>
+
+<section class="scr" id="login"><button class="back" onclick="go('welcome')">←</button><h1 style="margin-top:20px">Welcome back</h1><p class="mu">Sign in to continue your fitness journey</p>
+<div class="f"><label>Email address</label><input id="em" type="email" value="alex@gmail.com"></div>
+<div class="f"><label>Password</label><div class="row"><input id="pw" type="password" value="password" style="flex:1;border:0;background:none;color:var(--tx);font-size:15px;outline:0"><button class="lnk" onclick="pw.type=pw.type=='password'?'text':'password'">👁</button></div></div>
+<div class="row" style="justify-content:space-between;font-size:13px"><label><input type="checkbox" checked> Remember me</label><button class="lnk" onclick="toast('Reset link sent to '+em.value)">Forgot password?</button></div>
+<button class="btn" onclick="login()">Login</button><p class="mu" style="text-align:center">or continue with</p>
+<button class="btn o" onclick="social('Google')"><b style="color:#ea4335">G</b> Continue with Google</button>
+<button class="btn o" onclick="social('Facebook')"><b style="color:#1877f2">f</b> Continue with Facebook</button>
+<p class="mu" style="text-align:center">Don’t have an account? <button class="lnk" onclick="go('details')">Sign Up</button></p></section>
+
+<section class="scr" id="details"><button class="back" onclick="back()">←</button><h1>Your Profile</h1><p class="mu">Help us create your personalized fitness plan</p>
+<div class="f"><label>Name</label><input id="dn"></div><div class="f"><label>Age</label><input id="da" type="number"></div>
+<div class="f"><label>Gender</label><select id="dg"><option>Male<option>Female<option>Other</select></div>
+<div class="f"><label>Height (cm)</label><input id="dh" type="number"></div><div class="f"><label>Weight (kg)</label><input id="dw" type="number"></div>
+<div class="f"><label>Fitness Goal</label><select id="dgo"><option>Build Muscle<option>Lose Weight<option>Stay Fit<option>Improve Endurance</select></div>
+<div class="f"><label>Activity Level</label><select id="dac"><option>Lightly Active<option>Moderately Active<option>Very Active</select></div>
+<button class="btn" onclick="saveProfile()">Continue</button></section>
+
+<section class="scr" id="home"><div class="row" style="justify-content:space-between"><button class="back" onclick="toast('Menu: use the tabs below')">☰</button><button class="back" onclick="toast('🔔 You have 1 new tip from your AI coach')">🔔</button></div>
+<div class="row" style="justify-content:space-between;align-items:center"><div><p class="mu" id="gr" style="font-size:18px;color:var(--tx)"></p><h1 id="hn"></h1><p class="mu">Ready to make today count?</p></div><div class="em" style="border-radius:50%;width:64px;height:64px">🧑</div></div>
+<div class="ai" onclick="go('workout')"><div><h2>✨ AI Recommendation</h2><p class="mu" id="rec" style="margin-top:6px"></p></div><b>›</b></div>
+<div class="grid"><button class="card tile" onclick="go('workout')"><span class="ic">🏋️</span><b>Workout Plan</b><span class="mu">3 workouts this week</span></button>
+<button class="card tile" onclick="go('diet')"><span class="ic">🍴</span><b>Diet Plan</b><span class="mu">Personalized meals</span></button>
+<button class="card tile" onclick="go('chat')"><span class="ic">💬</span><b>AI Chat</b><span class="mu">Get instant advice</span></button>
+<button class="card tile" onclick="go('progress')"><span class="ic">📊</span><b>Progress</b><span class="mu">Track your journey</span></button></div>
+<p class="mu" style="text-align:center;margin-top:8px">🍃 Small steps today, big results tomorrow.</p></section>
+
+<section class="scr" id="workout"><button class="back" onclick="go('home')">←</button><h1>Today’s Workout</h1><p class="mu">Full Body Strength · <span class="dt"></span></p><div id="wl" style="display:flex;flex-direction:column;gap:10px"></div><button class="btn" onclick="startW()">Start Workout</button></section>
+
+<section class="scr" id="diet"><button class="back" onclick="go('home')">←</button><h1>Your AI Diet Plan</h1><p class="mu">Nutritious meals for a healthier you · <span class="dt"></span></p><div id="dl" style="display:flex;flex-direction:column;gap:10px"></div>
+<div class="card" style="justify-content:space-around"><b id="tc"></b><b id="tp"></b></div><button class="btn o" onclick="regen()">🔄 Ask AI for a new plan</button></section>
+
+<section class="scr" id="chat" style="padding-bottom:10px"><button class="back" onclick="go('home')">←</button><h1 style="text-align:center">AI Coach</h1><p class="mu" style="text-align:center">Your personal fitness assistant</p>
+<div class="msgs" id="ms"></div><div class="row" style="overflow-x:auto"><button class="chip" onclick="ask(this.textContent)">What’s a good post-workout meal?</button><button class="chip" onclick="ask(this.textContent)">Plan my week</button><button class="chip" onclick="ask(this.textContent)">How much water should I drink?</button></div>
+<div class="row"><input id="ci" placeholder="Type a message…" onkeydown="if(event.key=='Enter')ask()"><button class="send" onclick="ask()">➤</button></div></section>
+
+<section class="scr" id="progress"><button class="back" onclick="go('home')">←</button><h1>Your Progress</h1><p class="mu">A healthier you, one step at a time</p>
+<div class="row" style="justify-content:space-between;align-items:center"><h2>Weight Trend</h2><select class="rg" id="rg" onchange="draw()"><option>1M<option selected>3M<option>6M</select></div>
+<svg id="ch" viewBox="0 0 340 150" style="width:100%"></svg>
+<div class="row"><div class="card stat" style="flex:1"><span class="ic">🔥</span><b id="cal"></b><span class="mu">Calories Burned</span></div><div class="card stat" style="flex:1"><span class="ic">⚡</span><b id="stk"></b><span class="mu">Workout Streak</span></div></div>
+<div class="row" style="justify-content:space-between"><h2>Weekly Workouts</h2><span class="mu" id="wk"></span></div><div class="bars" id="bars"></div>
+<div class="card"><div class="ring" id="rg2"><span id="pc"></span></div><div><h2>Goal Completion</h2><p class="mu" id="gm"></p></div></div>
+<button class="btn o" onclick="logW()">⚖️ Log today’s weight</button></section>
+
+<section class="scr" id="profile"><h1>Profile</h1><div class="card" style="cursor:default"><div class="em" style="border-radius:50%">🧑</div><div><h2 id="pn"></h2><p class="mu" id="ps"></p></div></div>
+<button class="btn o" onclick="go('details')">✏️ Edit profile</button><button class="btn o" onclick="toast('Reminders set for 7:00 AM daily')">⏰ Daily reminder</button><button class="btn o" onclick="reset()">↺ Reset data</button><button class="btn" onclick="logout()">Log out</button></section>
+
+<nav id="nav"><button data-t="home" onclick="go('home')"><span>🏠</span>Home</button><button data-t="workout" onclick="go('workout')"><span>🏋️</span>Workout</button><button data-t="diet" onclick="go('diet')"><span>🥗</span>Diet</button><button data-t="progress" onclick="go('progress')"><span>📈</span>Progress</button><button data-t="profile" onclick="go('profile')"><span>👤</span>Profile</button></nav>
+<div id="ov"></div><div id="toast"></div></div>
+<script>
+const $=id=>document.getElementById(id);
+const DEF={name:'Alex',age:28,gender:'Male',height:180,weight:75,goal:'Build Muscle',act:'Moderately Active',logged:false,wk:[30,45,20,50,0,55,0],cal:12450,streak:14,eaten:{},ex:{},hist:[80,78.6,77.2,76,75.4,75]};
+let S;try{S=Object.assign({},DEF,JSON.parse(localStorage.getItem('fc')||'{}'))}catch(e){S=Object.assign({},DEF)}
+const save=()=>{try{localStorage.setItem('fc',JSON.stringify(S))}catch(e){}};
+const EX=[{n:'Squats',s:3,r:'15 reps',m:10,e:'🏋️'},{n:'Push-ups',s:3,r:'12 reps',m:8,e:'💪'},{n:'Plank',s:3,r:'60 sec',m:5,e:'🧘'}];
+let MEALS=[{t:'Breakfast',d:'Oatmeal with berries and nuts',k:450,p:18,e:'🥣'},{t:'Lunch',d:'Grilled chicken, quinoa and vegetables',k:550,p:40,e:'🍗'},{t:'Evening Snack',d:'Greek yogurt with banana',k:200,p:12,e:'🍌'},{t:'Dinner',d:'Salmon with sweet potato and broccoli',k:500,p:35,e:'🐟'}];
+let hist=['welcome'],cur='welcome';
+const TABS=['home','workout','diet','progress','profile'];
+function go(id,noPush){document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id==id));cur=id;if(!noPush)hist.push(id);
+$('nav').classList.toggle('on',TABS.includes(id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t==id));
+if(id=='details')fillD();if(id=='home')renderHome();if(id=='workout')rW();if(id=='diet')rD();if(id=='progress')rP();if(id=='profile')rPr();if(id=='chat'&&!$('ms').children.length)bot('Hi '+S.name+'! 👋\nHow can I help you today?');
+document.querySelector('.scr.on').scrollTop=0}
+function back(){hist.pop();go(hist.pop()||'welcome')}
+let tt;function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2200)}
+document.querySelectorAll('.dt').forEach(e=>e.textContent=new Date().toLocaleDateString('en',{weekday:'short',month:'short',day:'numeric',year:'numeric'}));
+// welcome carousel
+const SL=[['🏃‍♀️','Stay Fit,<br>Stay Healthy','Personalized workouts, smarter nutrition, a healthier you.'],['🥗','Eat Smart,<br>Feel Great','AI-built meal plans that fit your goals.'],['🤖','Your Coach,<br>Always On','Ask anything and get instant, tailored advice.'],['📈','Track Every<br>Win','See your progress build week after week.']];let si=0;
+function slide(i){si=i;$('wi').textContent=SL[i][0];$('wt').innerHTML=SL[i][1];$('wp').textContent=SL[i][2];$('dots').innerHTML=SL.map((_,j)=>`<span onclick="slide(${j})" style="cursor:pointer;width:8px;height:8px;border-radius:50%;background:${j==i?'var(--g)':'var(--bd)'}"></span>`).join('')}
+slide(0);setInterval(()=>{if(cur=='welcome')slide((si+1)%4)},3500);
+// auth
+function login(){if(!/^\S+@\S+\.\S+$/.test(em.value))return toast('Enter a valid email');if(pw.value.length<6)return toast('Password must be 6+ characters');S.logged=true;save();toast('Welcome back!');go('home')}
+function social(n){toast('Signed in with '+n+' (demo)');S.logged=true;save();setTimeout(()=>go('home'),600)}
+function logout(){S.logged=false;save();hist=['welcome'];go('welcome',1)}
+function reset(){if(!confirm('Reset all app data?'))return;try{localStorage.removeItem('fc')}catch(e){}S=Object.assign({},DEF);toast('Data reset');go('home')}
+function fillD(){dn.value=S.name;da.value=S.age;dg.value=S.gender;dh.value=S.height;dw.value=S.weight;dgo.value=S.goal;dac.value=S.act}
+function saveProfile(){if(!dn.value.trim())return toast('Please enter your name');if(!(da.value>9&&da.value<100))return toast('Enter a valid age');if(!(dh.value>100&&dh.value<250))return toast('Enter a valid height');if(!(dw.value>25&&dw.value<300))return toast('Enter a valid weight');
+Object.assign(S,{name:dn.value.trim(),age:+da.value,gender:dg.value,height:+dh.value,weight:+dw.value,goal:dgo.value,act:dac.value,logged:true});S.hist[S.hist.length-1]=S.weight;save();toast('Profile saved ✓');go('home')}
+// home
+function renderHome(){const h=new Date().getHours();gr.textContent=h<12?'Good morning,':h<18?'Good afternoon,':'Good evening,';hn.textContent=S.name+' 👋';
+rec.textContent=S.goal=='Lose Weight'?'Burn some extra calories today: try a full body workout and stay hydrated.':'Great energy today! Try a full body workout and stay hydrated.'}
+// workout
+function rW(){wl.innerHTML=EX.map((x,i)=>`<button class="card ${S.ex[i]?'done':''}" onclick="S.ex[${i}]=!S.ex[${i}];save();rW()"><div class="em">${x.e}</div><div><b>${x.n}</b><p class="mu">${x.s} sets × ${x.r}</p><p class="mu">⏱ ~${x.m} min</p></div><span class="chk">${S.ex[i]?'✅':'○'}</span></button>`).join('')}
+let wi=0,ws=0;
+function startW(){wi=0;ws=0;S.ex={};save();pl()}
+function pl(){const x=EX[wi],o=$('ov');o.classList.add('on');o.innerHTML=`<p class="mu">Exercise ${wi+1} of ${EX.length}</p><div style="font-size:70px">${x.e}</div><h1>${x.n}</h1><p>Set ${ws+1} of ${x.s} · ${x.r}</p><h1 id="tm" style="font-size:44px">${x.n=='Plank'?'60':''}</h1><button class="btn" onclick="setDone()">Complete set</button><button class="lnk" onclick="endW(0)">Quit workout</button>`;
+clearInterval(pl.t);if(x.n=='Plank'){let c=60;pl.t=setInterval(()=>{c--;const t=$('tm');if(!t||c<0)return clearInterval(pl.t);t.textContent=c},1000)}}
+function setDone(){clearInterval(pl.t);const x=EX[wi];ws++;if(ws>=x.s){S.ex[wi]=true;wi++;ws=0;if(wi>=EX.length)return endW(1);toast('Great! Next exercise')}else toast('Set done — rest 30s 💧');pl()}
+function endW(ok){clearInterval(pl.t);$('ov').classList.remove('on');if(ok){const d=(new Date().getDay()+6)%7;S.wk[d]+=23;S.cal+=180;S.streak++;save();toast('🎉 Workout complete! +180 kcal');go('progress')}else{save();rW()}}
+// diet
+function rD(){dl.innerHTML=MEALS.map((m,i)=>`<button class="card ${S.eaten[i]?'done':''}" onclick="S.eaten[${i}]=!S.eaten[${i}];save();rD()"><div class="em">${m.e}</div><div><b>${m.t}</b><p class="mu">${m.d}</p><p class="mu"><b>${m.k} kcal</b> | ${m.p}g protein</p></div><span class="chk">${S.eaten[i]?'✅':'○'}</span></button>`).join('');
+tc.textContent='🔥 '+MEALS.reduce((a,m)=>a+m.k,0)+' Total Calories';tp.textContent='💪 '+MEALS.reduce((a,m)=>a+m.p,0)+'g Total Protein'}
+async function regen(){toast('Asking AI coach…');try{const s=await claude.use('sample');if(!s)throw 0;const r=await s.json(`Create a one-day diet plan for a ${S.age}-year-old ${S.gender}, ${S.height}cm, ${S.weight}kg, goal "${S.goal}", ${S.act}. Return ONLY JSON: an array of 4 objects {"t":"Breakfast|Lunch|Evening Snack|Dinner","d":"short description","k":kcal number,"p":protein grams number,"e":"one food emoji"}.`);if(Array.isArray(r)&&r.length>=3){MEALS=r.slice(0,4);S.eaten={};save();rD();toast('New plan ready ✨')}else throw 0}catch(e){toast('AI unavailable here — keeping current plan')}}
+// progress
+function draw(){const n={'1M':4,'3M':6,'6M':6}[rg.value],h=S.hist.slice(-n),mx=Math.max(...h)+1,mn=Math.min(...h)-1,
+lb={'1M':['W1','W2','W3','W4'],'3M':['Jan','Feb','Mar','Apr','May','Jun'],'6M':['Jan','Feb','Mar','Apr','May','Jun']}[rg.value];
+const P=h.map((v,i)=>[20+i*(300/(h.length-1)),10+(mx-v)/(mx-mn)*100]);
+$('ch').innerHTML=`<polyline points="${P.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#1fa855" stroke-width="2.5"/>`+P.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#1fa855"/><text x="${p[0]}" y="140" font-size="10" fill="#8a9a90" text-anchor="middle">${lb[i]||''}</text>`).join('')+`<text x="${P.at(-1)[0]-10}" y="${P.at(-1)[1]-10}" font-size="11" font-weight="700" fill="#1fa855" text-anchor="end">${h.at(-1)} kg</text>`}
+function rP(){draw();cal.textContent=S.cal.toLocaleString();stk.textContent=S.streak;const mx=Math.max(...S.wk,60),dn=S.wk.filter(x=>x>0).length,D='MTWTFSS';
+$('wk').textContent=dn+' this week';$('bars').innerHTML=S.wk.map((v,i)=>`<div><i style="height:${Math.max(4,v/mx*70)}px;opacity:${v?1:.25}"></i>${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][i]}</div>`).join('');
+const p=Math.round(dn/7*100);pc.textContent=p+'%';rg2.style.background=`conic-gradient(#1fa855 ${p*3.6}deg,var(--bd) 0)`;gm.textContent=p>=70?'On track. Keep going!':'Let’s add a workout today!'}
+function logW(){const v=parseFloat(prompt('Today’s weight (kg):',S.weight));if(!(v>25&&v<300))return;S.weight=v;S.hist.push(v);S.hist=S.hist.slice(-12);save();rP();toast('Weight logged ✓')}
+function rPr(){pn.textContent=S.name;ps.textContent=`${S.age} yrs · ${S.height} cm · ${S.weight} kg · ${S.goal}`}
+// chat
+const ms=$('ms');
+function add(c,t){const d=document.createElement('div');d.className='m '+c;d.textContent=t;ms.appendChild(d);ms.scrollTop=ms.scrollHeight;return d}
+const bot=t=>add('b',t);
+function fallback(q){q=q.toLowerCase();
+if(/post.?workout|after (the )?(gym|workout)|meal/.test(q))return'A great post-workout meal includes protein and complex carbs. Try grilled chicken with quinoa and vegetables. It helps with muscle recovery! 💪';
+if(/water|hydrat/.test(q))return`Aim for about ${Math.round(S.weight*0.035*10)/10} litres a day, more on workout days.`;
+if(/plan|week|schedule/.test(q))return'Mon: Full body · Tue: Walk/stretch · Wed: Upper body · Thu: Rest · Fri: Lower body · Sat: Cardio · Sun: Rest. Adjust to how you feel.';
+if(/protein/.test(q))return`For ${S.goal.toLowerCase()}, aim for roughly ${Math.round(S.weight*1.6)}g protein a day.`;
+return'Good question! Focus on consistent workouts, protein-rich meals, hydration and 7–8 hours of sleep. Ask me about meals, workouts or recovery.'}
+async function ask(t){const q=(typeof t=='string'?t:ci.value).trim();if(!q)return;ci.value='';add('u',q);const b=bot('…');
+try{const s=await claude.use('sample');if(!s)throw 0;const hs=[...ms.querySelectorAll('.m')].slice(0,-1).slice(-8).map(m=>m.className.includes('u')?'User: '+m.textContent:'Coach: '+m.textContent).join('\n');
+const r=await s(`You are FitCoach AI, a friendly concise fitness and nutrition coach in a mobile app (max 80 words, plain text, at most one emoji). User profile: ${S.name}, ${S.age}, ${S.gender}, ${S.height}cm, ${S.weight}kg, goal ${S.goal}, ${S.act}. Give general wellness advice only; suggest a doctor for medical issues.\nConversation:\n${hs}\nUser: ${q}\nCoach:`,{cache:false,onText:({text})=>{b.textContent=text;ms.scrollTop=ms.scrollHeight}});b.textContent=r.text}
+catch(e){b.textContent=fallback(q)}}
+// boot
+if(S.logged){hist=['home'];go('home',1)}
+</script></body></html>
